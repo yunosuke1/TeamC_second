@@ -110,6 +110,21 @@ class UserControllerTest {
     	System.out.println(session);
     }
     
+    //------------------消す
+    @Test
+    @DisplayName("登録確認画面に遷移")
+    void register_00() throws Exception {
+    	
+    	MvcResult mvcResult = mockMvc.perform(get("/register")
+    			.sessionAttr("userId", 1)
+    			).andExpect(view().name("redirect:/shoppingList"))
+    			.andReturn()
+    			;
+    	
+    	MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
+    	System.out.println(session);
+    }
+    //----------------------
     /**
      * 登録系のサンプルその１
      *
