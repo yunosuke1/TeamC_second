@@ -80,6 +80,7 @@ public class OrderConfirmController {
 
 	@RequestMapping("/register")
 	public String register(@Validated(GroupOrder.class) OrderConfirmForm form, BindingResult result, Model model) throws ParseException {
+		System.out.println(form);
 		if (result.hasErrors()) {
 			return index(model);
 		}

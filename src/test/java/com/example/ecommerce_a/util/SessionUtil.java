@@ -65,6 +65,46 @@ public class SessionUtil {
 		return createMockHttpSession(sessionMap);
 	}
 	
+	public static MockHttpSession userSession04() {
+		
+		User user = new User();
+		user.setId(1);
+		user.setName("テストユーザ");
+		user.setEmail("coffeeshop.test@gmail.com");
+		user.setPassword("morimori");
+		user.setZipcode("1111111");
+		user.setAddress("テスト住所");
+		user.setTelephone("テスト電話番号");
+		
+		Map<String, Object> sessionMap = new LinkedHashMap<String, Object>();
+		sessionMap.put("userId", 1);
+		sessionMap.put("userName", "userName");
+		sessionMap.put("userEmail", "coffeeshop.test@gmail.com");
+		sessionMap.put("user", user);
+		sessionMap.put("userZipcode", "userZipcode");
+		return createMockHttpSession(sessionMap);
+	}
+	
+	public static MockHttpSession userSession05() {
+		
+		User user = new User();
+		user.setId(1);
+		user.setName("テストユーザ");
+		user.setEmail("coffeeshop.test@gmail.com");
+		user.setPassword("morimori");
+		user.setZipcode("1111111");
+		user.setAddress("テスト住所");
+		user.setTelephone("テスト電話番号");
+		
+		Map<String, Object> sessionMap = new LinkedHashMap<String, Object>();
+		sessionMap.put("userId", 1);
+		sessionMap.put("userName", "userName");
+		sessionMap.put("userEmail", "userEmail");
+		sessionMap.put("user", user);
+		sessionMap.put("userZipcode", "userZipcode");
+		return createMockHttpSession(sessionMap);
+	}
+	
 	private static MockHttpSession createMockHttpSession(Map<String, Object> sessions) {
 		MockHttpSession mockHttpSession = new MockHttpSession();
 		for (Map.Entry<String, Object> session : sessions.entrySet()) {

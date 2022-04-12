@@ -87,21 +87,20 @@ class UserPageControllerTest {
     }
     
     /**
-     * 登録系のサンプルその１
+     * sessionを遷移先のページまで遅れないためエラーが出る
      *
-     * 登録、更新系は、perform(post())を使用
-     * このアプリでは登録確認画面をはさむらしく、入力した値はいきなりDBには登録されずsessionに一旦格納するらしい
-     * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
      */
     @Test
     @DisplayName("登録確認画面に遷移")
     void userPage_02() throws Exception {
-    	MockHttpSession userSession01 = SessionUtil.userSession02();
+    	MockHttpSession userSession = SessionUtil.userSession04();
 
-    	mockMvc.perform(get("/userPage")
-    			.session(userSession01)
-    			);
+        MvcResult mvcResult = mockMvc.perform(get("/userPage")
+    			.session(userSession)
+    			).andReturn();
     	
+        MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
+        System.out.println(session);
     }
 
 
