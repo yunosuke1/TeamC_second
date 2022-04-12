@@ -50,9 +50,6 @@ class UserPageControllerTest {
 
     private MockMvc mockMvc;
     
-    @Autowired
-   	private NamedParameterJdbcTemplate template;
-
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
     }
@@ -72,35 +69,26 @@ class UserPageControllerTest {
     
 	
 	/**
-     * 登録系のサンプルその１
      *
-     * 登録、更新系は、perform(post())を使用
-     * このアプリでは登録確認画面をはさむらしく、入力した値はいきなりDBには登録されずsessionに一旦格納するらしい
-     * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
      */
     @Test
-    @DisplayName("登録確認画面に遷移")
+    @DisplayName("ログイン画面に遷移(状態：ログイン無し)")
     void userPage_01() throws Exception {
         mockMvc.perform(post("/userPage")).andExpect(view().name("forward:/login"))
                 ;
-
     }
     
     /**
-     * sessionを遷移先のページまで遅れないためエラーが出る
      *
      */
     @Test
-    @DisplayName("登録確認画面に遷移")
+    @DisplayName("ユーザーページ画面に遷移(状態：ログイン有り)")
     void userPage_02() throws Exception {
     	MockHttpSession userSession = SessionUtil.userSession04();
-
-        MvcResult mvcResult = mockMvc.perform(get("/userPage")
-    			.session(userSession)
-    			).andReturn();
-    	
-        MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
-        System.out.println(session);
+        mockMvc.perform(get("/userPage")
+        		.session(userSession)
+        		).andExpect(view().name("user_page"))
+				.andReturn();
     }
 
 
