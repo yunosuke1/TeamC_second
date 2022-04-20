@@ -53,10 +53,10 @@ class ItemDetailControllerTest {
 	@DisplayName("画面遷移")
 	@DatabaseSetup(value = "classpath:order/order_history.xlsx")
 	void syousai1() throws Exception {
-		OrderItem orders = new OrderItem();
-		String sql = "truncate table orders";
-		SqlParameterSource param1 = new BeanPropertySqlParameterSource(orders);
-		template.update(sql, param1);
+//		OrderItem orders = new OrderItem();
+//		String sql = "truncate table orders";
+//		SqlParameterSource param1 = new BeanPropertySqlParameterSource(orders);
+//		template.update(sql, param1);
 		
 		mockMvc.perform(get("/itemDetail")
 		.param("id", "1")
@@ -191,21 +191,26 @@ class ItemDetailControllerTest {
 	
 	@Test
 	@DisplayName("getNameなし")
-//	@DatabaseSetup(value = "classpath:order/itemDetail_01.xlsx")
+	@DatabaseSetup(value = "classpath:order/itemDetail_01.xlsx")
 	void syousai6() throws Exception {
 		Item items = new Item();
 		String sql = "alter table items alter column name drop not null;"
-				+ "update items set name = null where id = 31;";
+				+ "update items set name = null where id = 30;";
 		SqlParameterSource param1 = new BeanPropertySqlParameterSource(items);
 		template.update(sql, param1);
 		
 		mockMvc.perform(get("/itemDetail")
-		.param("id", "31")
+		.param("id", "30")
 		
 		
 		)
 		.andExpect(view().name("redirect:/shoppingList"))
 		.andReturn();
+		
+		Item items1 = new Item();
+		String sql3 = "delete from items where id=30;";
+		SqlParameterSource param3 = new BeanPropertySqlParameterSource(items1);
+		template.update(sql3, param3);
 	}
 	
 	@Test
