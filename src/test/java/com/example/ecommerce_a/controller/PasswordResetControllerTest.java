@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.example.ecommerce_a.domain.PasswordReset;
 import com.example.ecommerce_a.util.XlsDataSetLoader;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 
 @SpringBootTest
@@ -67,6 +68,7 @@ class PasswordResetControllerTest {
 	
 	@Test
 	@DisplayName("アカウントが存在する場合")
+	@DatabaseSetup(value = "classpath:order/passwordReset_01.xlsx")
 	//コントローラ呼び出し
 	void resetP3() throws Exception{
 		mockMvc.perform(get("/reset/resetConfirm")
@@ -78,6 +80,7 @@ class PasswordResetControllerTest {
 	
 	@Test
 	@DisplayName("emailが不正の場合")
+	@DatabaseSetup(value = "classpath:order/passwordReset_01.xlsx")
 	//コントローラ呼び出し
 	void resetP4() throws Exception{
 		mockMvc.perform(get("/reset/resetConfirm")
@@ -86,6 +89,7 @@ class PasswordResetControllerTest {
 	
 	@Test
 	@DisplayName("パスワードリセット完了OK")
+	@DatabaseSetup(value = "classpath:order/passwordReset_01.xlsx")
 	//コントローラ呼び出し
 	void resetP5() throws Exception{
 		PasswordReset passwordReset = new PasswordReset();
@@ -110,6 +114,7 @@ class PasswordResetControllerTest {
 
 	@Test
 	@DisplayName("key")
+	@DatabaseSetup(value = "classpath:order/passwordReset_01.xlsx")
 	//コントローラ呼び出し
 	void resetP6() throws Exception{
 		mockMvc.perform(get("/reset/passwordReset")
@@ -125,6 +130,7 @@ class PasswordResetControllerTest {
 	
 	@Test
 	@DisplayName("パスワードリセット完了後パスワード不一致")
+	@DatabaseSetup(value = "classpath:order/passwordReset_01.xlsx")
 	//コントローラ呼び出し
 	void resetP7() throws Exception{
 		mockMvc.perform(get("/reset/passwordResetFinished")
