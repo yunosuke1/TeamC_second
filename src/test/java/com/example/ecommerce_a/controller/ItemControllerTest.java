@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.example.ecommerce_a.domain.Item;
 import com.example.ecommerce_a.util.XlsDataSetLoader;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -44,9 +46,6 @@ class ItemControllerTest {
 
     private MockMvc mockMvc;
     
-    @Autowired
-	private NamedParameterJdbcTemplate template;
-	
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
     }
@@ -67,195 +66,162 @@ class ItemControllerTest {
 	
 	/**
     *
-    *
-    * ログインしていない状態では、sessionのみにオーダーを格納する
-    * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-    * 
     */
-//   @DatabaseSetup("classpath:cart/items.xlsx")
    @DisplayName("商品一覧へ遷移")
    @Test
    void shoppingListTest_01() throws Exception {
-   	
-//   	MvcResult mvcResult = 
-   			mockMvc.perform(get("/shoppingList")
-   			)
-   			.andExpect(view().name("item_list_coffee"))
-//   			.andReturn()
-               ;
-//   	MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
-//   	@SuppressWarnings(value = "unchecked")
-//   	List<OrderItem> orderItemList = (List<OrderItem>)session.getAttribute("orderItemList");
-//   	assertEquals("とんこつラーメン", orderItemList.get(0).getItem().getName(), "とんこつラーメンなし");
+   			mockMvc.perform(get("/shoppingList")).andExpect(view().name("item_list_coffee"));
    }
    
    /**
    *
-   *
-   * ログインしていない状態では、sessionのみにオーダーを格納する
-   * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-   * 
    */
-//  @DatabaseSetup("classpath:cart/items.xlsx")
   @DisplayName("商品一覧の並び替え(安い)")
-  
   @Test
   void orderByTest_01() throws Exception {
   	
-//  	MvcResult mvcResult = 
-  			mockMvc.perform(get("/shoppingList/orderBy")
+  	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/orderBy")
 			.param("select", "low")
   			)
   			.andExpect(view().name("item_list_coffee"))
-//  			.andReturn()
+  			.andReturn()
               ;
-//  	MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
-//  	@SuppressWarnings(value = "unchecked")
-//  	List<OrderItem> orderItemList = (List<OrderItem>)session.getAttribute("orderItemList");
-//  	assertEquals("とんこつラーメン", orderItemList.get(0).getItem().getName(), "とんこつラーメンなし");
+  	ModelAndView mav = mvcResult.getModelAndView();
+  	@SuppressWarnings("unchecked")
+	List<Item> list = (List<Item>) mav.getModel().get("itemList");
+  	assertAll("並び順の確認",
+			() -> assertEquals("チョコクッキー", list.get(0).getName(), "一番安い順番が不一致"),
+			() -> assertEquals("エスプレッソフラペチーノ", list.get(17).getName(), "不一致")
+			);
   }
   
   /**
   *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
   */
-// @DatabaseSetup("classpath:cart/items.xlsx")
  @DisplayName("商品一覧の並び替え(高い)")
- 
  @Test
  void orderByTest_02() throws Exception {
  	
-// 	MvcResult mvcResult = 
- 			mockMvc.perform(get("/shoppingList/orderBy")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/orderBy")
 			.param("select", "high")
  			)
  			.andExpect(view().name("item_list_coffee"))
-// 			.andReturn()
+ 			.andReturn()
              ;
-// 	MockHttpSession session = (MockHttpSession) mvcResult.getRequest().getSession();
-// 	@SuppressWarnings(value = "unchecked")
-// 	List<OrderItem> orderItemList = (List<OrderItem>)session.getAttribute("orderItemList");
-// 	assertEquals("とんこつラーメン", orderItemList.get(0).getItem().getName(), "とんこつラーメンなし");
+ 	ModelAndView mav = mvcResult.getModelAndView();
+  	@SuppressWarnings("unchecked")
+	List<Item> list = (List<Item>) mav.getModel().get("itemList");
+  	assertAll("並び順の確認",
+  			() -> assertEquals("エスプレッソフラペチーノ", list.get(0).getName(), "高い順番が不一致"),
+			() -> assertEquals("チョコクッキー", list.get(17).getName(), "不一致")
+			);
  }
  
  /**
   *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品検索(アクションなし)")
  @Test
  void searchWordTest_01() throws Exception {
-	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
-			 )
+
+	 mockMvc.perform(get("/shoppingList/searchWord"))
 	 .andExpect(view().name("forward:/shoppingList"))
 	 ;
 
  }
  
  /**
-  *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
+  *検索結果が無い事を確認
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品検索(値無し)")
  @Test
  void searchWordTest_02() throws Exception {
 	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/searchWord")
 			 .param("select", "")
 			 )
-	 .andExpect(view().name("forward:/shoppingList"))
+	 .andExpect(view().name("forward:/shoppingList")).andReturn()
 	 ;
-	 
+ 	ModelAndView mav = mvcResult.getModelAndView();
+ 	@SuppressWarnings("unchecked")
+	List<Item> list = (List<Item>) mav.getModel().get("itemList");
+ 	assertNull(list);
  }
  
  /**
   *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品一覧の並び替え(安い順、該当商品なし)")
  @Test
  void searchWordTest_03() throws Exception {
 	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/searchWord")
 			 .param("select", "low")
 			 )
-	 .andExpect(view().name("item_list_coffee"))
+	 .andExpect(view().name("item_list_coffee")).andReturn()
 	 ;
-	 
+ 	ModelAndView mav = mvcResult.getModelAndView();
+  	assertEquals("該当する商品がありません", mav.getModel().get("nullMessage"), "メッセージが不一致");
  }
+ 
  /**
-  *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
   * 
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品一覧の並び替え(安い順、コーヒーで検索)")
  @Test
  void searchWordTest_04() throws Exception {
 	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/searchWord")
 			 .param("select", "low")
 			 .param("searchWord", "コーヒー")
 			 )
-	 .andExpect(view().name("item_list_coffee"))
+	 .andExpect(view().name("item_list_coffee")).andReturn()
 	 ;
-	 
+ 	ModelAndView mav = mvcResult.getModelAndView();
+  	@SuppressWarnings("unchecked")
+	List<Item> list = (List<Item>) mav.getModel().get("itemList");
+  	System.out.println(list);
+  	assertAll("並び順の確認",
+  			() -> assertEquals("ドリップコーヒー", list.get(0).getName(), "安い順で検索が不一致"),
+			() -> assertEquals("アイスコーヒー", list.get(1).getName(), "不一致")
+			);
  }
  /**
   *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品一覧の並び替え(高い順、該当する商品なし)")
  @Test
  void searchWordTest_05() throws Exception {
 	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/searchWord")
 			 .param("select", "high")
 			 )
-	 .andExpect(view().name("item_list_coffee"))
+	 .andExpect(view().name("item_list_coffee")).andReturn()
 	 ;
-	 
+ 	ModelAndView mav = mvcResult.getModelAndView();
+  	assertEquals("該当する商品がありません", mav.getModel().get("nullMessage"), "メッセージが不一致");
  }
  /**
   *
-  *
-  * ログインしていない状態では、sessionのみにオーダーを格納する
-  * そのため戻り値からsessionを取り出し、入力した値がただしくセッションに保存されていることを確認
-  * 
   */
- @DisplayName("商品一覧の並び替え(高い)")
+ @DisplayName("商品一覧の並び替え(高い順、コーヒーで検索)")
  @Test
  void searchWordTest_06() throws Exception {
 	 
-// 	MvcResult mvcResult = 
-	 mockMvc.perform(get("/shoppingList/searchWord")
+ 	MvcResult mvcResult = mockMvc.perform(get("/shoppingList/searchWord")
 			 .param("select", "high")
 			 .param("searchWord", "コーヒー")
 			 )
-	 .andExpect(view().name("item_list_coffee"))
+	 .andExpect(view().name("item_list_coffee")).andReturn()
 	 ;
+	 ModelAndView mav = mvcResult.getModelAndView();
+	  	@SuppressWarnings("unchecked")
+		List<Item> list = (List<Item>) mav.getModel().get("itemList");
+	  	System.out.println(list);
+	  	assertAll("並び順の確認",
+	  			() -> assertEquals("アイスコーヒー", list.get(0).getName(), "高い順で検索が不一致"),
+	  			() -> assertEquals("ドリップコーヒー", list.get(1).getName(), "不一致")
+				);
 	 
  }
  

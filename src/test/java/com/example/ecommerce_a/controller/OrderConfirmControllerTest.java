@@ -157,7 +157,7 @@ class OrderConfirmControllerTest {
      *
      */
     @Test
-    @DisplayName("画面遷移")
+    @DisplayName("画面遷移(paymentMethod:1)")
     void confirmRegister_02() throws Exception {
     	MockHttpSession userSession = SessionUtil.userSession04();
     	MvcResult mvcResult = mockMvc.perform(get("/confirm/register")
