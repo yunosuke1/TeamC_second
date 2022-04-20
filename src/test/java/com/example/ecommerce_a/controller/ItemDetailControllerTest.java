@@ -22,6 +22,7 @@ import com.example.ecommerce_a.domain.OrderItem;
 import com.example.ecommerce_a.domain.PasswordReset;
 import com.example.ecommerce_a.util.XlsDataSetLoader;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 
 @SpringBootTest
@@ -67,6 +68,7 @@ class ItemDetailControllerTest {
 
 	@Test
 	@DisplayName("トッピングありOK")
+	@DatabaseSetup(value = "classpath:order/order_history.xlsx")
 	void syousai2() throws Exception {
 		OrderItem orders = new OrderItem();
 		String sql = "truncate table order_items";
